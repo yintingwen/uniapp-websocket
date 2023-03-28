@@ -142,7 +142,7 @@ export default class WebsocketClient {
    * 发送数据
    * @param {*} data
    */
-  async send(data: string | ArrayBuffer | Record<string, any>) {
+  async send(data: any) {
     if (!this.socket || this.status !== WebsocketClientStatusEnum.CONNECTED) {
       throw new Error('socket is not connected')
     }
@@ -160,7 +160,7 @@ export default class WebsocketClient {
    * @param templateId 模板ID
    * @param data 数据
    */
-  async sendByTemplate(templateId: string, data: string | ArrayBuffer | Record<string, any>) {
+  async sendByTemplate(templateId: string, data: any) {
     const templateData = this.template.generate(templateId, data)
     this.send(templateData)
   }
@@ -220,7 +220,7 @@ export default class WebsocketClient {
    */
   private handelMessage(msg: any) {
     let { data } = msg
-    if (!Array.isArray(data)) {
+    if (!(data instanceof ArrayBuffer)) {
       try {
         data = JSON.parse(data)
       } catch (error) { }

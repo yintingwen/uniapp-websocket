@@ -1,6 +1,6 @@
 import { describe, expect, it, test } from 'vitest'
-import WebscoketClientInterceptor from '../WebscoketClientInterceptor'
-import WebsocketClientTemplate from '../WebsocketClientTemplate';
+import WebscoketClientInterceptor from '../src/WebscoketClientInterceptor'
+import WebsocketClientTemplate from '../src/WebsocketClientTemplate';
 
 test('set', () => {
   function subTemplate (id: string) {

@@ -1,6 +1,6 @@
-type WebscoketClientInterceptorsName = 'send' | 'message' | 'sub' | 'unsub'
-const WEBSOCKET_CLIENT_INTERCEPTOR_NAMES: WebscoketClientInterceptorsName[] = ['send', 'message', 'sub', 'unsub']
-type WebsocketClientInterceptorsCallback =  (...args: any[]) => any
+export type WebscoketClientInterceptorsName = 'send' | 'message' | 'sub' | 'unsub'
+export const WEBSOCKET_CLIENT_INTERCEPTOR_NAMES: WebscoketClientInterceptorsName[] = ['send', 'message', 'sub', 'unsub']
+export type WebsocketClientInterceptorsCallback =  (...args: any[]) => any
 
 export default class WebscoketClientInterceptor {
   interceptorNames: WebscoketClientInterceptorsName[] = WEBSOCKET_CLIENT_INTERCEPTOR_NAMES

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import WebscoketClientInterceptor from '../WebscoketClientInterceptor'
+import WebscoketClientInterceptor from '../src/WebscoketClientInterceptor'
 
 describe('interceptors', () => {
   it('should work', async () => {

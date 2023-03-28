@@ -11,7 +11,7 @@ export default class WebsocketClientTemplate {
     return this.templates[name]
   }
 
-  generate(name: string, ...args: any[]) {
-    return this.templates[name] ? this.templates[name](...args) : args
+  generate(name: string, data: any) {
+    return this.templates[name] ? this.templates[name](data) : data
   }
 }
