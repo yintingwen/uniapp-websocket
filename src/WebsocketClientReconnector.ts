@@ -20,7 +20,7 @@ export default class WebsocketClientReconnector {
   private count!: number; // 重连次数
   private maxCount!: number; // 最大重连次数
   private interval!: number; // 重连间隔
-  private timer!: NodeJS.Timeout | null; // 重连计时器
+  private timer!: any; // 重连计时器
   private tasks!: WebsocketClientReconnectorTasks; // 重连任务
 
   constructor(options: WebsocketClientReconnectorOptions = {}) {

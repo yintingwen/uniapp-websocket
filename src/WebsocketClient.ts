@@ -8,7 +8,6 @@ interface WebsocketClientOptions {
   reconnect?: boolean;
   reconnectMaxCount?: number;
   reconnectInterval?: number;
-  subKey?: string | ((data: any) => string);
 }
 
 export type WebsocketClientHooks = 'send' | 'open' | 'message' | 'error' | 'close' | 'sub' | 'unsub'
@@ -32,7 +31,6 @@ export default class WebsocketClient {
   private reconnectInterval!: number; // 重连间隔
   private reconnectLock: boolean = false; // 重连锁
   private initOptions!: Required<WebsocketClientOptions>; // 初始化参数
-  private subKey!: string | ((data: any) => string); // 订阅key
 
   status: WebsocketClientStatusEnum; // 连接状态
   reconnector: WebsocketClientReconnector; // 重连器
@@ -81,13 +79,16 @@ export default class WebsocketClient {
   }
 
   /**
-   * 事件监听
+   * 事件监听、移除、触发
    */
-  addListener(name: WebsocketClientHooks, callback: WebsocketClientCallbackVoid) {
+  on(name: WebsocketClientHooks | 'string', callback: WebsocketClientCallbackVoid) {
     this.event.addListener(name, callback, this)
   }
-  removeListener(name: WebsocketClientHooks, callback: WebsocketClientCallbackVoid) {
+  off(name: WebsocketClientHooks | 'string', callback: WebsocketClientCallbackVoid) {
     this.event.removeListener(name, callback, this)
+  }
+  emit(name: WebsocketClientHooks | 'string', ...args: any[]) {
+    this.event.emit(name, ...args)
   }
 
   /**
@@ -166,6 +167,7 @@ export default class WebsocketClient {
   }
 
   /**
+   * 订阅主题，可以自动发送订阅的模板消息，并在连接后进行自动订阅
    * @param {*} topic 订阅主题
    * @param {*} listener 监听函数
    */
@@ -270,11 +272,10 @@ export default class WebsocketClient {
 }
 
 export function normalizeOptions(options: WebsocketClientOptions): Required<WebsocketClientOptions> {
-  const { reconnect, reconnectMaxCount, reconnectInterval, subKey } = options
+  const { reconnect, reconnectMaxCount, reconnectInterval } = options
   options.reconnect = reconnect === undefined ? true : !!reconnect
   options.reconnectMaxCount = reconnectMaxCount === undefined ? 5 : reconnectMaxCount
   options.reconnectInterval = reconnectInterval === undefined ? 500 : reconnectInterval
-  options.subKey = subKey === undefined ? 'topic' : subKey
 
   return options as Required<WebsocketClientOptions>
 }
