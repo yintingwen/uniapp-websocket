@@ -2,6 +2,7 @@ import EventEmitter from 'eventemitter3'
 import WebscoketClientInterceptor from './WebscoketClientInterceptor';
 import WebsocketClientReconnector from './WebsocketClientReconnector';
 import WebsocketClientTemplate from './WebsocketClientTemplate';
+import { S } from 'vitest/dist/types-5872e574';
 
 interface WebsocketClientOptions {
   url: string;
@@ -37,6 +38,8 @@ export default class WebsocketClient {
   template: WebsocketClientTemplate; // 模板仓库
   event: EventEmitter; // 事件中心
   interceptor: WebscoketClientInterceptor; // 拦截器
+
+  static template = new WebsocketClientTemplate()
 
   /**
    * 构造函数
@@ -162,8 +165,18 @@ export default class WebsocketClient {
    * @param data 数据
    */
   async sendByTemplate(templateId: string, data: any) {
-    const templateData = this.template.generate(templateId, data)
+    const templateIns = this.getTemplateIns(templateId)
+    const templateData = templateIns.generate(templateId, data)
     this.send(templateData)
+  }
+
+  /**
+   * 获取模板管理实例
+   * @param templateId 模板ID
+   * @returns 
+   */
+  getTemplateIns (templateId: string) {
+    return this.template.get(templateId) ? this.template : WebsocketClient.template
   }
 
   /**
@@ -195,11 +208,9 @@ export default class WebsocketClient {
    */
   private async sendSub(action: 'sub' | 'unsub', topic: string) {
     if (!this.socket || this.status !== WebsocketClientStatusEnum.CONNECTED) return
-    let data = topic
-    if (this.template.get(action)) {
-      data = this.template.generate(action, topic)
-    }
-    const sendData = await this.interceptor.run(action, data, this)
+    const templateIns = this.getTemplateIns(action)
+    const tmpData = templateIns.generate(action, topic)
+    const sendData = await this.interceptor.run(action, tmpData, this)
     this.send(sendData)
   }
 
@@ -220,7 +231,7 @@ export default class WebsocketClient {
    * socket收到消息
    * @param {*} msg 数据
    */
-  private handelMessage(msg: any) {
+  private async handelMessage(msg: any) {
     let { data } = msg
     if (!(data instanceof ArrayBuffer)) {
       try {
@@ -228,7 +239,7 @@ export default class WebsocketClient {
       } catch (error) { }
     }
 
-    data = this.interceptor.run('message', data, this)
+    data = await this.interceptor.run('message', data, this)
     this.event.emit('message', data)
   }
 

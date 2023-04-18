@@ -7,7 +7,7 @@ export default class WebsocketClientTemplate {
     this.templates[name] = genaertor
   }
 
-  get(name: string) {
+  get(name: string): WebsocketClientCallbackAny | undefined {
     return this.templates[name]
   }
 

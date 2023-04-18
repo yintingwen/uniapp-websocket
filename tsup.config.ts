@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  entryPoints: ['/src/WebsocketClient.ts'],
+  entryPoints: ['src/WebsocketClient.ts'],
   outDir: 'dist',
   splitting: true,
   dts: true,
